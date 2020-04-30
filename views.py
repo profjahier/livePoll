@@ -77,7 +77,7 @@ def formulaire():
         if questions[q_en_cours][2]:
             quizzstr += f'<input type="radio" name="repcu" value="{q}" id="rep{q}" /> <label for="rep{q}">{q}</label><br />'
         else:
-            quizzstr += f'<input type="checkbox" name="{q[0]}" id="rep{q}" /> <label for="rep{q}">{q}</label><br />'
+            quizzstr += f'<input type="checkbox" name="{q}" id="rep{q}" /> <label for="rep{q}">{q}</label><br />'
     return render_template('formulaire.html', n = q_en_cours, question=questions[q_en_cours][0], quizz=Markup(quizzstr))
 
 @app.route('/reponse', methods=["POST"])
