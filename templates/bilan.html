@@ -10,17 +10,20 @@
 </head>
 
 <body>
-    <h1>{{question}}</h1>
+    <h1>{{question}} </h1>
 
+
+    <p><a href="{{url_for('bilan')}}?q={{q-1}}">&lt; </a>
+        <a href="{{url_for('bilan2')}}?q={{q}}">RAZ</a>
+        <a href="{{url_for('bilan')}}?q={{q+1}}"> &gt;</a>
+    </p>
+    
     <div class="bilan">
     {{resultats}}
     </div>
-
-<footer>
-    <p><a href="{{url_for('bilan1')}}?q={{q}}">voir le bilan caché</a> &nbsp;&nbsp;&nbsp;   / &nbsp;&nbsp;&nbsp;<a href="{{url_for('bilan')}}?q={{q}}">voir le bilan définitif</a></p>
-    <p><a href="{{url_for('bilan1')}}?q={{q+1}}">voir le bilan suivant</a>&nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp;<a href="{{url_for('bilan1')}}?q={{q-1}}">voir le bilan précédent</a></p>
-    <p><a href="{{url_for('bilan2')}}?q={{q}}">Réinitialiser le bilan à 0</a></p>
-</footer>
 </body>
 
 </html>
+
+
+</footer>

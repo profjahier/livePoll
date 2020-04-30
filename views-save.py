@@ -46,7 +46,7 @@ def index():
 # Choix nouvelle question
 #
 
-@app.route('/admin')
+@app.route('/admin.html')
 def admin():
     listquest = '<input type="radio" name="n_quest" value="0" id="rep0" /> <label for="rep0">Page d\'attente</label><br />'
     liste_no_questions = list(questions.keys())
@@ -58,7 +58,7 @@ def admin():
             listquest += f'<input type="radio" name="n_quest" value="{q}" id="rep{q}" /> <label for="rep{q}">{questions[q][0]}</label><br />'
     return render_template('admin.html', liste_questions=Markup(listquest))
 
-@app.route('/choixrep', methods=["POST"])
+@app.route('/choixrep.html', methods=["POST"])
 def choixrep():
     global q_en_cours, new_quest
     reponse = request.form
@@ -70,7 +70,7 @@ def choixrep():
 # formulaire questions
 #
 
-@app.route('/formulaire')
+@app.route('/formulaire.html')
 def formulaire():
     quizzstr = ''
     for q in questions[q_en_cours][1]:
@@ -80,7 +80,7 @@ def formulaire():
             quizzstr += f'<input type="checkbox" name="{q[0]}" id="rep{q}" /> <label for="rep{q}">{q}</label><br />'
     return render_template('formulaire.html', n = q_en_cours, question=questions[q_en_cours][0], quizz=Markup(quizzstr))
 
-@app.route('/reponse', methods=["POST"])
+@app.route('/reponse.html', methods=["POST"])
 def reponse():
     global new_quest
     new_quest = False
@@ -101,7 +101,7 @@ def reponse():
 # Bilans 
 #
 
-@app.route('/bilan', methods=["GET"])
+@app.route('/bilan.html', methods=["GET"])
 def bilan():
     """Bilan final avec reponses et scores"""
     try:
@@ -125,7 +125,7 @@ def bilan():
         resultats=Markup(bilstr), refresh=Markup('<meta http-equiv="refresh" content="3" />'))
 
 
-@app.route('/bilan2', methods=["GET"])
+@app.route('/bilan2.html', methods=["GET"])
 def bilan2():
     """RAZ bilan"""
     try:

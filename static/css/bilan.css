@@ -12,7 +12,7 @@ h1{
 }
 
 div.bilan {
-    background-color: #ffffff;
+    background-color: orangered;
     font-size: 20;
     font-family: "Open Sans", sans-serif;
     font-weight: bold ;  
@@ -21,12 +21,12 @@ div.bilan {
     border-radius: 5px;
 }
 
-footer {
-    position: fixed;
-    bottom:0px;
-    width:80%;
-    background-color:white;
-}
 ul {
     padding:0px;
 }
+
+.vert{
+    color: green;
+}
+
+a{text-decoration: none;}
