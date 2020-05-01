@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, Markup, redirect, url_for
 app = Flask(__name__)
 
 questions = {
-    # No : [ Question, [(code, reponse), ( , )...], QCU?QCM]
+    # No : [ Question, [reponse1,réponse2...], QCU?QCM]   : False pour pour QCM et True pour QCU
     1 : ["Question Vrai / Faux", 
 		["Vrai", "Faux"],
 		True],
@@ -19,7 +19,6 @@ questions = {
 }
 
 reponses = dict()
-
 q_en_cours = 0
 new_quest = False
 
@@ -40,7 +39,7 @@ def index():
     if q_en_cours == 0 or (q_en_cours == n_quest and not new_quest):
         return render_template('index.html')
     else:
-        return render_template('redirect.html')
+        return redirect(url_for('formulaire'))
 
 #
 # Choix nouvelle question
