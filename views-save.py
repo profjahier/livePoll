@@ -1,26 +1,11 @@
 from flask import Flask, render_template, request, Markup, redirect, url_for
+from questions_chap15 import questions
 
 app = Flask(__name__)
 
-questions = {
-    # No : [ Question, [(code, reponse), ( , )...], QCU?QCM]
-    1 : ["Question Vrai / Faux", 
-		["Vrai", "Faux"],
-		True],
-	2 : ["Question Oui / Non", 
-		["Oui", "Non"],
-		True],
-	3 : ["Choix unique A B C D", 
-		["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
-		True],
-	4 : ["Choix multiple QCM A B C D", 
-		["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
-		False]
-}
-
 reponses = dict()
-
 q_en_cours = 0
+q_max = max(list(questions.keys()))
 new_quest = False
 
 def ajoute_reponse(q, r):
@@ -40,15 +25,16 @@ def index():
     if q_en_cours == 0 or (q_en_cours == n_quest and not new_quest):
         return render_template('index.html')
     else:
-        return render_template('redirect.html')
+        return redirect(url_for('formulaire'))
 
 #
 # Choix nouvelle question
 #
 
-@app.route('/admin.html')
+@app.route('/admin')
 def admin():
-    listquest = '<input type="radio" name="n_quest" value="0" id="rep0" /> <label for="rep0">Page d\'attente</label><br />'
+    quest = questions[q_en_cours][0] if q_en_cours != 0 else 'Aucune question sélectionnée.'
+    listquest = ''
     liste_no_questions = list(questions.keys())
     liste_no_questions.sort()
     for q in liste_no_questions:
@@ -56,9 +42,9 @@ def admin():
             listquest += f'<input type="radio" name="n_quest" value="{q}" id="rep{q}" checked/> <label for="rep{q}">{questions[q][0]}</label><br />'
         else:
             listquest += f'<input type="radio" name="n_quest" value="{q}" id="rep{q}" /> <label for="rep{q}">{questions[q][0]}</label><br />'
-    return render_template('admin.html', liste_questions=Markup(listquest))
+    return render_template('admin.html', liste_questions=Markup(listquest), question=quest)
 
-@app.route('/choixrep.html', methods=["POST"])
+@app.route('/choixrep', methods=["POST"])
 def choixrep():
     global q_en_cours, new_quest
     reponse = request.form
@@ -70,17 +56,17 @@ def choixrep():
 # formulaire questions
 #
 
-@app.route('/formulaire.html')
+@app.route('/formulaire')
 def formulaire():
     quizzstr = ''
     for q in questions[q_en_cours][1]:
         if questions[q_en_cours][2]:
             quizzstr += f'<input type="radio" name="repcu" value="{q}" id="rep{q}" /> <label for="rep{q}">{q}</label><br />'
         else:
-            quizzstr += f'<input type="checkbox" name="{q[0]}" id="rep{q}" /> <label for="rep{q}">{q}</label><br />'
+            quizzstr += f'<input type="checkbox" name="{q}" id="rep{q}" /> <label for="rep{q}">{q}</label><br />'
     return render_template('formulaire.html', n = q_en_cours, question=questions[q_en_cours][0], quizz=Markup(quizzstr))
 
-@app.route('/reponse.html', methods=["POST"])
+@app.route('/reponse', methods=["POST"])
 def reponse():
     global new_quest
     new_quest = False
@@ -101,7 +87,7 @@ def reponse():
 # Bilans 
 #
 
-@app.route('/bilan.html', methods=["GET"])
+@app.route('/bilan', methods=["GET"])
 def bilan():
     """Bilan final avec reponses et scores"""
     try:
@@ -119,13 +105,18 @@ def bilan():
         bilstr += '</ul>'
         questionstr = questions[n_quest][0]
     else:
-        bilstr = "<p>Pas de réponses encore à la question</p>"
-        questionstr = questions[n_quest][0] if n_quest in questions else "Plus de question !!"
+        if n_quest in questions:
+            questionstr = questions[n_quest][0]
+            bilstr = "<p>Aucune réponse...</p>"
+        else:
+            questionstr = "Questionnaire interactif (live session)"
+            bilstr = "pas de question"
+
     return render_template('bilan.html', q=n_quest, question=questionstr, 
-        resultats=Markup(bilstr), refresh=Markup('<meta http-equiv="refresh" content="3" />'))
+        resultats=Markup(bilstr), refresh=Markup('<meta http-equiv="refresh" content="3" />'), q_max=q_max)
 
 
-@app.route('/bilan2.html', methods=["GET"])
+@app.route('/bilan2', methods=["GET"])
 def bilan2():
     """RAZ bilan"""
     try:

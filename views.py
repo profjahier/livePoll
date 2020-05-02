@@ -1,27 +1,18 @@
-from flask import Flask, render_template, request, Markup, redirect, url_for
+from flask import Flask, render_template, request, Markup, redirect, url_for, send_file
+from requests import get
+import io
+from questions_chap15 import questions
 
 app = Flask(__name__)
-
-questions = {
-    # No : [ Question, [reponse1,réponse2...], QCU?QCM]   : False pour pour QCM et True pour QCU
-    1 : ["Question Vrai / Faux", 
-		["Vrai", "Faux"],
-		True],
-	2 : ["Question Oui / Non", 
-		["Oui", "Non"],
-		True],
-	3 : ["Choix unique A B C D", 
-		["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
-		True],
-	4 : ["Choix multiple QCM A B C D", 
-		["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
-		False],
-}
 
 reponses = dict()
 q_en_cours = 0
 q_max = max(list(questions.keys()))
 new_quest = False
+
+# machines autorisees pour administration
+ip_admin = ["127.0.0.1"] + [f"192.168.1.{int(n)}" for n in range(10, 151)]
+print(ip_admin)
 
 def ajoute_reponse(q, r):
     """Ajoute une reponse r à la question q"""
@@ -48,6 +39,11 @@ def index():
 
 @app.route('/admin')
 def admin():
+    # Securisation de la page
+    host = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    if host not in ip_admin:
+        return 
+
     quest = questions[q_en_cours][0] if q_en_cours != 0 else 'Aucune question sélectionnée.'
     listquest = ''
     liste_no_questions = list(questions.keys())
@@ -62,6 +58,11 @@ def admin():
 @app.route('/choixrep', methods=["POST"])
 def choixrep():
     global q_en_cours, new_quest
+    # Securisation de la page
+    host = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    if host not in ip_admin:
+        return 
+
     reponse = request.form
     q_en_cours = int(reponse["n_quest"])
     new_quest = True
@@ -87,10 +88,10 @@ def reponse():
     new_quest = False
     reponse = request.form
     q = int(reponse["n_quest"])
-    if questions[q][2]:
+    if questions[q][2]: # Question de type QCU
         n = reponse["repcu"]
         ajoute_reponse(q, n)
-    else:
+    else: # Question de type QCM
         n = []
         for r in questions[q][1]:
             if r in reponse:
@@ -105,6 +106,12 @@ def reponse():
 @app.route('/bilan', methods=["GET"])
 def bilan():
     """Bilan final avec reponses et scores"""
+
+    # Securisation de la page
+    host = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    if host not in ip_admin:
+        return 
+
     try:
         n_quest_form = request.args
         n_quest = int(n_quest_form["q"])
@@ -143,6 +150,6 @@ def bilan2():
         reponses[n_quest].clear()
     return redirect(url_for('bilan') + f"?q={n_quest}")
 
-app.run(host= '0.0.0.0')
+app.run(host= '0.0.0.0', debug=False)
 
 # http://ip_serveur:5000

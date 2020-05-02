@@ -13,7 +13,7 @@
 <body>
     <h1>Afficher une question</h1>
     <form method="post" action="{{url_for('choixrep')}}">
-        <p>Question en cours : {{question}}</p>
+        <p>Question en cours : <strong>{{question}}</strong></p>
         <p>Choisissez la question courante à afficher</p>
         {{(liste_questions)}}
         <p><input type="submit" value="Choisir la question" /></p>

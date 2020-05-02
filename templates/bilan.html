@@ -4,7 +4,10 @@
 <head>
     <meta charset="utf-8"/>
     {{refresh}}
-    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+   <!-- <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>-->
+
+    <script type="text/javascript" id="MathJax-script" async src="{{url_for('static', filename='mathjaxload.js')}}"></script>
+
     <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/bilan.css')}}">
     <title>Bilan</title>
 </head>
