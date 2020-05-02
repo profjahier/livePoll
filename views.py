@@ -15,11 +15,12 @@ questions = {
 		True],
 	4 : ["Choix multiple QCM A B C D", 
 		["Réponse A", "Réponse B", "Réponse C", "Réponse D"],
-		False]
+		False],
 }
 
 reponses = dict()
 q_en_cours = 0
+q_max = max(list(questions.keys()))
 new_quest = False
 
 def ajoute_reponse(q, r):
@@ -47,7 +48,8 @@ def index():
 
 @app.route('/admin')
 def admin():
-    listquest = '<input type="radio" name="n_quest" value="0" id="rep0" /> <label for="rep0">Page d\'attente</label><br />'
+    quest = questions[q_en_cours][0] if q_en_cours != 0 else 'Aucune question sélectionnée.'
+    listquest = ''
     liste_no_questions = list(questions.keys())
     liste_no_questions.sort()
     for q in liste_no_questions:
@@ -55,7 +57,7 @@ def admin():
             listquest += f'<input type="radio" name="n_quest" value="{q}" id="rep{q}" checked/> <label for="rep{q}">{questions[q][0]}</label><br />'
         else:
             listquest += f'<input type="radio" name="n_quest" value="{q}" id="rep{q}" /> <label for="rep{q}">{questions[q][0]}</label><br />'
-    return render_template('admin.html', liste_questions=Markup(listquest))
+    return render_template('admin.html', liste_questions=Markup(listquest), question=quest)
 
 @app.route('/choixrep', methods=["POST"])
 def choixrep():
@@ -118,10 +120,15 @@ def bilan():
         bilstr += '</ul>'
         questionstr = questions[n_quest][0]
     else:
-        bilstr = "<p>Pas de réponses encore à la question</p>"
-        questionstr = questions[n_quest][0] if n_quest in questions else "Plus de question !!"
+        if n_quest in questions:
+            questionstr = questions[n_quest][0]
+            bilstr = "<p>Aucune réponse...</p>"
+        else:
+            questionstr = "Questionnaire interactif (live session)"
+            bilstr = "pas de question"
+
     return render_template('bilan.html', q=n_quest, question=questionstr, 
-        resultats=Markup(bilstr), refresh=Markup('<meta http-equiv="refresh" content="3" />'))
+        resultats=Markup(bilstr), refresh=Markup('<meta http-equiv="refresh" content="3" />'), q_max=q_max)
 
 
 @app.route('/bilan2', methods=["GET"])

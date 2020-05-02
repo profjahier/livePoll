@@ -2,19 +2,21 @@
 <html lang=fr>
 
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
 
-    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
     <title>{{titre}}</title>
 </head>
 
 <body>
     <h1>Afficher une question</h1>
-    <form method="post" action="{{url_for('choixrep')}}" >
-    <p>Choisissez la question courante à afficher</p>
-    {{(liste_questions)}}
-    <p><input type="submit" value="Choisir la question" /></p>
+    <form method="post" action="{{url_for('choixrep')}}">
+        <p>Question en cours : {{question}}</p>
+        <p>Choisissez la question courante à afficher</p>
+        {{(liste_questions)}}
+        <p><input type="submit" value="Choisir la question" /></p>
     </form>
 </body>
 

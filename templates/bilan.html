@@ -11,13 +11,17 @@
 
 <body>
     <h1>{{question}} </h1>
+    <p>
+    {% if q > 1 %}
+    <a href="{{url_for('bilan')}}?q={{q-1}}">&lt; </a>
+    {% endif %}
+    <a href="{{url_for('bilan2')}}?q={{q}}">RAZ</a>
+    {% if q < q_max %}
+    <a href="{{url_for('bilan')}}?q={{q+1}}"> &gt;</a>
+    {% endif %}
 
+</p>
 
-    <p><a href="{{url_for('bilan')}}?q={{q-1}}">&lt; </a>
-        <a href="{{url_for('bilan2')}}?q={{q}}">RAZ</a>
-        <a href="{{url_for('bilan')}}?q={{q+1}}"> &gt;</a>
-    </p>
-    
     <div class="bilan">
     {{resultats}}
     </div>
